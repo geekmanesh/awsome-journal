@@ -1,0 +1,24 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="certifi" />
+          <option value="charset-normalizer" />
+          <option value="defusedxml" />
+          <option value="dj-rest-auth" />
+          <option value="django-allauth" />
+          <option value="django-rest-auth" />
+          <option value="idna" />
+          <option value="oauthlib" />
+          <option value="python3-openid" />
+          <option value="requests" />
+          <option value="requests-oauthlib" />
+          <option value="six" />
+          <option value="urllib3" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
