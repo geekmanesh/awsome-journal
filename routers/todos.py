@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from starlette import status
 
-from models import Todos, TodoRequest
+from models.todo import Todos, TodoRequest
 from database import engine, session_local
 
 router = APIRouter()

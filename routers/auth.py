@@ -2,7 +2,7 @@ from calendar import firstweekday
 
 from fastapi import FastAPI, APIRouter
 
-from models import CreateUserRequest, User
+from models.user import User, CreateUserRequest
 
 router = APIRouter()
 
