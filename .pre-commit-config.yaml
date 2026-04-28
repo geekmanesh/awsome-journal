@@ -1,0 +1,24 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0  # Use the latest tag from GitHub
+    hooks:
+      - id: trailing-whitespace      # Removes trailing whitespace
+      - id: end-of-file-fixer        # Ensures files end with a newline
+      - id: check-added-large-files  # Prevents accidentally committing giant files
+        args: ['--maxkb=1000']       # Set a custom size limit (e.g., 1MB)
+      - id: check-yaml                # Validates YAML file syntax
+      - id: check-json                # Validates JSON file syntax
+      - id: check-merge-conflict      # Checks for unresolved merge conflict markers
+
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 24.8.0
+    hooks:
+      - id: black
+        language_version: python3.12  # Match your project's Python version
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.7
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix] # Auto-fix issues where possible
+      - id: ruff-format

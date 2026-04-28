@@ -6,6 +6,15 @@ info:
 http:
   method: POST
   url: "{{base_url}}/todos"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Title Two]",
+        "description": "description two",
+        "priority": 2,
+        "complete": false
+      }
   auth: inherit
 
 settings:
