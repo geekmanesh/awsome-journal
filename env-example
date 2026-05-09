@@ -1,0 +1,2 @@
+export SECRET_KEY="choose-a-secret-key"
+export ALGORITHM="HS256"
