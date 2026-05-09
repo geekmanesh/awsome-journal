@@ -1,13 +1,16 @@
+from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
+from jose import jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from starlette import status
 
 from database import session_local
-from models.user import CreateUserRequest, User
+from models.user import CreateUserRequest, Token, User
+from settings import ALGORITHM, SECRET_KEY
 
 router = APIRouter()
 
@@ -30,7 +33,21 @@ def authenticate_user(username: str, password: str, db):
         return False
     if not bcrypt_context.verify(password, user.hashed_password):
         return False
-    return True
+    return user
+
+
+def create_access_token(
+    username: str,
+    user_id: int,
+    expire_delta: timedelta,
+):
+    encode = {
+        "sub": username,
+        "id": user_id,
+    }
+    expires = datetime.now(timezone.utc) + expire_delta
+    encode.update({"exp": expires})
+    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -55,7 +72,7 @@ async def create_user(
     db.commit()
 
 
-@router.post("/token")
+@router.post("/token", response_model=Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: db_dependency,
@@ -63,4 +80,6 @@ async def login_for_access_token(
     user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
         return "Failed authentication"
-    return "successful authentication"
+    token = create_access_token(user.username, user.id, timedelta(minutes=20))
+
+    return Token(access_token=token, token_type="bearer")
