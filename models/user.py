@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, String, Boolean
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from sqlalchemy import Boolean, Column, Integer, String
 
 from database import Base
+
 
 class User(Base):
     __tablename__ = "users"
@@ -14,6 +15,7 @@ class User(Base):
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
     role = Column(String)
+
 
 class CreateUserRequest(BaseModel):
     username: str

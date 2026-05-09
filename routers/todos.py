@@ -4,10 +4,11 @@ from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.orm import Session
 from starlette import status
 
-from models.todo import Todos, TodoRequest
-from database import engine, session_local
+from database import session_local
+from models.todo import TodoRequest, Todos
 
 router = APIRouter()
+
 
 def get_db():
     sqlite_db = session_local()
@@ -18,25 +19,28 @@ def get_db():
         sqlite_db.close()
 
 
-sqlite_db_dependency = Annotated[Session, Depends(get_db)]
+db_dependency = Annotated[Session, Depends(get_db)]
 
 
 @router.get("/", status_code=status.HTTP_200_OK)
-async def read_all_todos(db: sqlite_db_dependency):
+async def read_all_todos(db: db_dependency):
     return db.query(Todos).all()
 
 
 @router.get("/todos/{todo_id}", status_code=status.HTTP_200_OK)
-async def read_todo(db: sqlite_db_dependency, todo_id: int = Path(gt=0)):
+async def read_todo(db: db_dependency, todo_id: int = Path(gt=0)):
     todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
     if todo_model is not None:
         return todo_model
     else:
-        raise HTTPException(status_code=404, detail="No todo found with this id!")
+        raise HTTPException(
+            status_code=404,
+            detail="No todo found with this id!",
+        )
 
 
 @router.post("/todos", status_code=status.HTTP_201_CREATED)
-async def create_todo(db: sqlite_db_dependency, todo_request: TodoRequest):
+async def create_todo(db: db_dependency, todo_request: TodoRequest):
     todo_model = Todos(**todo_request.model_dump())
 
     db.add(todo_model)
@@ -45,7 +49,9 @@ async def create_todo(db: sqlite_db_dependency, todo_request: TodoRequest):
 
 @router.put("/todos/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_todo(
-    db: sqlite_db_dependency, todo_request: TodoRequest, todo_id: int = Path(gt=0)
+    db: db_dependency,
+    todo_request: TodoRequest,
+    todo_id: int = Path(gt=0),
 ):
     todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
     if todo_model is None:
@@ -61,7 +67,7 @@ async def update_todo(
 
 
 @router.delete("/todos/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_todo(db: sqlite_db_dependency, todo_id: int = Path(gt=0)):
+async def delete_todo(db: db_dependency, todo_id: int = Path(gt=0)):
     todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
 
     if todo_model is None:

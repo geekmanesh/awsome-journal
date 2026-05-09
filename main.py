@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Depends, HTTPException, Path
+from fastapi import FastAPI
 
-from routers import auth, todos
 from database import Base, engine
+from routers import auth, todos
+
 app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
