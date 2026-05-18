@@ -1,12 +1,14 @@
 from typing import Annotated
-from jose import jwt, JWTError
-from passlib.context import CryptContext
+
 from fastapi import Depends, HTTPException
-from starlette import status
-from sqlalchemy.orm import Session
-from database import session_local
 from fastapi.security import OAuth2PasswordBearer
-from settings import SECRET_KEY, ALGORITHM
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from sqlalchemy.orm import Session
+from starlette import status
+
+from .database import session_local
+from .settings import ALGORITHM, SECRET_KEY
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")

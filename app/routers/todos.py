@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Path
 from starlette import status
 
-from models.todo import TodoRequest, Todos
-from dependencies import user_dependency, db_dependency
+from app.dependencies import db_dependency, user_dependency
+from app.models.todo import TodoRequest, Todos
 
 router = APIRouter()
 

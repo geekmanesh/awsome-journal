@@ -1,0 +1,15 @@
+info:
+  name: Read All Todos
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{base_url}}/admin/todos"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

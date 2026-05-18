@@ -1,8 +1,10 @@
-from dependencies import bcrypt_context
-from models.user import User
-from settings import SECRET_KEY, ALGORITHM
 from datetime import datetime, timedelta, timezone
+
 from jose import jwt
+
+from .dependencies import bcrypt_context
+from .models.user import User
+from .settings import ALGORITHM, SECRET_KEY
 
 
 def authenticate_user(username: str, password: str, db):

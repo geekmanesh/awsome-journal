@@ -1,11 +1,11 @@
 info:
-  name: Register
+  name: Delete Todo
   type: http
-  seq: 1
+  seq: 2
 
 http:
-  method: POST
-  url: "{{base_url}}/auth/"
+  method: DELETE
+  url: "{{base_url}}/admin/todos/3"
   auth: inherit
 
 settings:

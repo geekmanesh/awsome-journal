@@ -17,7 +17,7 @@ config:
 request:
   auth:
     type: bearer
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJoYW1pZCIsImlkIjoyLCJleHAiOjE3NzkwODY1Njd9.fxiXBG2YeuQ5rOrBcV9PTjkhDFi1Vpii9SVMJ-hGNEM
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzaWtpbSIsImlkIjozLCJyb2xlIjoidXNlciIsImV4cCI6MTc3OTA5ODM5NX0.ZFJV5AeVhiIHPVbaHYQMJLwwbPzPQQypBBsVLsHShQQ
   variables:
     - name: token_url
       value: "{{base_url}}/auth/token"
