@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 
-from ..database import Base
+from app.database import Base
 
 
 class Todos(Base):
@@ -13,10 +13,3 @@ class Todos(Base):
     priority = Column(Integer)
     complete = Column(Boolean, default=False)
     owner_id = Column(Integer, ForeignKey("users.id"))
-
-
-class TodoRequest(BaseModel):
-    title: str = Field(min_length=3)
-    description: str = Field(min_length=3, max_length=1000)
-    priority: int = Field(gt=0, lt=6)
-    complete: bool

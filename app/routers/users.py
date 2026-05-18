@@ -3,7 +3,6 @@ from passlib.context import CryptContext
 from starlette import status
 
 from app.dependencies import db_dependency, user_dependency
-from app.models.todo import TodoRequest, Todos
 from app.models.user import User
 from app.services import bcrypt_context
 
