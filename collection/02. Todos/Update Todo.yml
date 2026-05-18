@@ -6,6 +6,15 @@ info:
 http:
   method: PUT
   url: "{{base_url}}/todos/1"
+  body:
+    type: json
+    data: |-
+      {
+        "title": "1234",
+        "description": "HELLO ITS ME",
+        "priority": 2,
+        "complete": true
+      }
   auth: inherit
 
 settings:

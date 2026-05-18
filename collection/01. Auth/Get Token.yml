@@ -5,7 +5,7 @@ info:
 
 http:
   method: POST
-  url: "{{base_url}}/token"
+  url: "{{base_url}}/auth/token"
   body:
     type: multipart-form
     data:
@@ -16,6 +16,24 @@ http:
         type: text
         value: hamid1234
   auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        if (res.status == 200){
+          const responseBody = res.body
+          
+          if (responseBody && responseBody.access_token){
+            bru.setVar(auth_token, responseBody.access_token)
+          }
+          else{
+            console.log("ERROR 2")
+          }
+        }
+        else{
+          console.log("ERROR 1")
+        }
 
 settings:
   encodeUrl: true
