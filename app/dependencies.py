@@ -7,8 +7,8 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from starlette import status
 
-from .database import session_local
-from .settings import ALGORITHM, SECRET_KEY
+from app.core.database import session_local
+from app.core.settings import ALGORITHM, SECRET_KEY
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")

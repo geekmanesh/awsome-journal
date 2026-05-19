@@ -1,11 +1,10 @@
-from fastapi import APIRouter, HTTPException, Path
-from passlib.context import CryptContext
+from fastapi import APIRouter, HTTPException
 from starlette import status
 
 from app.dependencies import db_dependency, user_dependency
 from app.models.user import User
 from app.services import bcrypt_context
-from app.schemas.user import UserVerification
+from app.schemas.user import UserVerification, UpdateUserRequest
 
 
 router = APIRouter(
@@ -49,3 +48,30 @@ async def change_password(
 
     db.add(user_model)
     db.commit()
+
+
+@router.patch("/", status_code=status.HTTP_200_OK)
+async def update_user(
+    user: user_dependency, db: db_dependency, user_update_request: UpdateUserRequest
+):
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication failed",
+        )
+    user_model = db.query(User).filter(User.id == user.get("id")).first()
+
+    if user_model is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User Not Found",
+        )
+
+    update_data = user_update_request.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(user_model, key, value)
+
+    db.commit()
+    db.refresh(user_model)
+
+    return user_model

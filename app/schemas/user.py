@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import Optional
 
 
 class UserVerification(BaseModel):
@@ -14,6 +15,14 @@ class CreateUserRequest(BaseModel):
     password: str
     role: str
     phone_number: str
+
+
+class UpdateUserRequest(BaseModel):
+    username: Optional[str] = None
+    email: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    phone_number: Optional[str] = None
 
 
 class Token(BaseModel):

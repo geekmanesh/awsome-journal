@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 
-from app.database import Base
+from app.core.database import Base
 
 
 class Todos(Base):

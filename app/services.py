@@ -4,7 +4,7 @@ from jose import jwt
 
 from .dependencies import bcrypt_context
 from .models.user import User
-from .settings import ALGORITHM, SECRET_KEY
+from app.core.settings import ALGORITHM, SECRET_KEY
 
 
 def authenticate_user(username: str, password: str, db):
