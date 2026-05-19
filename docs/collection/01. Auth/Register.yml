@@ -10,12 +10,13 @@ http:
     type: json
     data: |-
       {
-        "username": "hossein",
-        "email": "hossein@gmail.com",
+        "username": "hossein4",
+        "email": "hossein3@gmail.com",
         "password": "hossein1234",
         "first_name": "hosseinam",
         "last_name": "hossienian",
-        "role": "user"
+        "role": "user",
+        "phone_number": "1234566"
       }
 
 settings:
