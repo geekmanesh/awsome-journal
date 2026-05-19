@@ -17,10 +17,10 @@ config:
 request:
   auth:
     type: bearer
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzaWtpbSIsImlkIjozLCJyb2xlIjoidXNlciIsImV4cCI6MTc3OTEwMTI1OH0.xd23WkuJgihYgkSW0FBfcZ0szf_htcPLfl7J67Lh828
+    token: "{{auth_token}}"
   variables:
-    - name: token_url
-      value: "{{base_url}}/auth/token"
+    - name: auth_token
+      value: ""
 bundled: false
 extensions:
   bruno:

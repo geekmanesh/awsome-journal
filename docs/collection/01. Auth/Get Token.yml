@@ -11,13 +11,16 @@ http:
     data:
       - name: username
         type: text
-        value: sikim
+        value: hossein
       - name: password
         type: text
-        value: sikim1234
+        value: hossein1234
   auth: inherit
 
 runtime:
+  variables:
+    - name: "{{auth_token}}"
+      value: ""
   scripts:
     - type: after-response
       code: |-
