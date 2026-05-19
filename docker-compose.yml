@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:15
-    container_name: todo_db
+    container_name: todos_db
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -14,8 +14,8 @@ services:
 
   backend:
     build: .
-    container_name: panah_backend
-    command: python manage.py runserver 0.0.0.0:8000
+    container_name: todos_backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
       - .:/app
     ports:
