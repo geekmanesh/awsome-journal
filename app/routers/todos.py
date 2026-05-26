@@ -5,7 +5,10 @@ from app.dependencies import db_dependency, user_dependency
 from app.models.todo import Todos
 from app.schemas.todo import TodoRequest
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/todos",
+    tags=["Todos"],
+)
 
 
 @router.get("/", status_code=status.HTTP_200_OK)
@@ -13,7 +16,7 @@ async def read_all_todos(user: user_dependency, db: db_dependency):
     return db.query(Todos).filter(Todos.owner_id == user.get("id")).all()
 
 
-@router.get("/todos/{todo_id}", status_code=status.HTTP_200_OK)
+@router.get("/{todo_id}", status_code=status.HTTP_200_OK)
 async def read_todo(
     user: user_dependency, db: db_dependency, todo_id: int = Path(gt=0)
 ):
@@ -38,7 +41,7 @@ async def read_todo(
         )
 
 
-@router.post("/todos", status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_todo(
     user: user_dependency,
     db: db_dependency,
@@ -59,7 +62,7 @@ async def create_todo(
     db.commit()
 
 
-@router.put("/todos/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_todo(
     user: user_dependency,
     db: db_dependency,
@@ -90,7 +93,7 @@ async def update_todo(
     db.commit()
 
 
-@router.delete("/todos/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{todo_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_todo(
     user: user_dependency, db: db_dependency, todo_id: int = Path(gt=0)
 ):
