@@ -96,12 +96,17 @@ Keep an open mind! Improving documentation, bug triaging, or writing tutorials a
 ### Use these tools to follow our coding style
 
 > Use black as formatter
+>
 > Use isort to sort your imports
+>
 > Use flake8 to lint codes
 
 ### Commit message conventions.
 
 > You should use git conventions like, feat, fix, chore, docs
+>
 >"feat: add this feature"
+>
 >"fix: fix this feature"
+>
 >"docs: fix a typo in README"

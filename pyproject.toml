@@ -1,0 +1,46 @@
+[tool.ruff]
+# Black-compatible line length
+line-length = 88
+
+# Python version (adjust to your project)
+target-version = "py312"
+
+# Exclude common directories
+exclude = [
+    ".git",
+    "__pycache__",
+    "venv",
+    ".venv",
+    "migrations",
+    "build",
+    "dist",
+]
+
+[tool.ruff.lint]
+# Select rules: Flake8 (E, F, W), isort (I), pyupgrade (UP), etc.
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "UP",  # pyupgrade (modern Python syntax)
+    "C90", # mccabe complexity
+]
+
+# Ignore rules that conflict with Black (similar to flake8's E203, W503)
+ignore = [
+    "E203", # whitespace before ':'
+]
+
+# isort settings (mimic Black profile)
+[tool.ruff.lint.isort]
+known-first-party = ["your_project_name"]  # replace with your package
+combine-as-imports = true
+force-single-line = false
+
+# Formatting settings (mimic Black)
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

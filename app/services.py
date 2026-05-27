@@ -1,10 +1,11 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from jose import jwt
 
+from app.core.settings import ALGORITHM, SECRET_KEY
+
 from .dependencies import bcrypt_context
 from .models.user import User
-from app.core.settings import ALGORITHM, SECRET_KEY
 
 
 def authenticate_user(username: str, password: str, db):
@@ -27,6 +28,6 @@ def create_access_token(
         "id": user_id,
         "role": role,
     }
-    expires = datetime.now(timezone.utc) + expire_delta
+    expires = datetime.now(UTC) + expire_delta
     encode.update({"exp": expires})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)

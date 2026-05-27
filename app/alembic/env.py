@@ -1,12 +1,11 @@
 import sys
-from pathlib import Path
 from logging.config import fileConfig
-from sqlalchemy import create_engine
-from environs import env
+from pathlib import Path
 
 from alembic import context
-from app.models import user, todo
 from app.database import Base
+from environs import env
+from sqlalchemy import create_engine
 
 env.read_env()
 

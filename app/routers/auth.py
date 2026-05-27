@@ -7,8 +7,8 @@ from starlette import status
 
 from app.dependencies import bcrypt_context, db_dependency
 from app.models.user import User
-from app.services import authenticate_user, create_access_token
 from app.schemas.user import CreateUserRequest, Token
+from app.services import authenticate_user, create_access_token
 
 router = APIRouter(
     prefix="/auth",

@@ -3,9 +3,8 @@ from starlette import status
 
 from app.dependencies import db_dependency, user_dependency
 from app.models.user import User
+from app.schemas.user import UpdateUserRequest, UserVerification
 from app.services import bcrypt_context
-from app.schemas.user import UserVerification, UpdateUserRequest
-
 
 router = APIRouter(
     prefix="/users",
