@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.core.database import Base, engine
 
-from .routers import admin, auth, todos, users
+from .routers import admin, auth, todos, users, views
 
 app = FastAPI()
 
@@ -15,11 +15,7 @@ templates = Jinja2Templates(directory="app/templates/")
 app.mount("/static", StaticFiles(directory="app/static/"), name="static")
 
 
-@app.get("/")
-def test(request: Request):
-    return templates.TemplateResponse(name="home.html", request=request)
-
-
+app.include_router(views.router)
 app.include_router(auth.router)
 app.include_router(todos.router)
 app.include_router(admin.router)
