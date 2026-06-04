@@ -28,7 +28,7 @@ runtime:
           const responseBody = res.body
           
           if (responseBody && responseBody.access_token){
-            bru.setVar(auth_token, responseBody.access_token)
+            bru.setVar("auth_token", responseBody.access_token)
           }
           else{
             console.log("ERROR 2")
