@@ -1,4 +1,5 @@
 from environs import env
+from fastapi.templating import Jinja2Templates
 
 env.read_env()
 
@@ -13,3 +14,5 @@ DB_USER = env.str("DB_USER")
 DB_PASSWORD = env.str("DB_PASSWORD")
 
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+templates = Jinja2Templates(directory="app/templates/")
