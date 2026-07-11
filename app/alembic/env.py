@@ -3,13 +3,12 @@ from logging.config import fileConfig
 from pathlib import Path
 
 from alembic import context
-from app.database import Base
+from app.core.database import Base
 from environs import env
 from sqlalchemy import create_engine
-
+from app.core.settings import DATABASE_URL
+from app import models
 env.read_env()
-
-DATABASE_URL = env.str("DATABASE_URL")
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
