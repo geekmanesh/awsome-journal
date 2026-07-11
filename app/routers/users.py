@@ -3,7 +3,7 @@ from starlette import status
 
 from app.dependencies import db_dependency, user_dependency
 from app.models.user import User
-from app.schemas.user import UpdateUserRequest, UserVerification
+from app.schemas.user import UpdateUserRequest, UserResponse, UserVerification
 from app.services import bcrypt_context
 
 router = APIRouter(
@@ -12,36 +12,44 @@ router = APIRouter(
 )
 
 
-@router.get("/me", status_code=status.HTTP_200_OK)
+@router.get(
+    "/me",
+    status_code=status.HTTP_200_OK,
+    response_model=UserResponse,
+    summary="Get the current user",
+    description="Returns the profile of the authenticated user.",
+)
 async def get_user(user: user_dependency, db: db_dependency):
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication Failed",
-        )
     user_model = db.query(User).filter(User.id == user.get("id")).first()
+    if user_model is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found!"
+        )
 
     return user_model
 
 
-@router.put("/", status_code=status.HTTP_204_NO_CONTENT)
+@router.put(
+    "/",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Change the current user's password",
+    description="Verifies the current password before setting the new one.",
+)
 async def change_password(
     user: user_dependency, db: db_dependency, user_verification: UserVerification
 ):
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication failed",
-        )
-
     user_model = db.query(User).filter(User.id == user.get("id")).first()
+    if user_model is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found!"
+        )
 
     if not bcrypt_context.verify(
         user_verification.password, user_model.hashed_password
     ):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Verification falied",
+            detail="Current password is incorrect.",
         )
     user_model.hashed_password = bcrypt_context.hash(user_verification.new_password)
 
@@ -49,21 +57,23 @@ async def change_password(
     db.commit()
 
 
-@router.patch("/", status_code=status.HTTP_200_OK)
+@router.patch(
+    "/",
+    status_code=status.HTTP_200_OK,
+    response_model=UserResponse,
+    summary="Update the current user",
+    description="Partially updates the authenticated user's profile. "
+    "Only the fields provided in the request body are changed.",
+)
 async def update_user(
     user: user_dependency, db: db_dependency, user_update_request: UpdateUserRequest
 ):
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication failed",
-        )
     user_model = db.query(User).filter(User.id == user.get("id")).first()
 
     if user_model is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User Not Found",
+            detail="User not found!",
         )
 
     update_data = user_update_request.model_dump(exclude_unset=True)

@@ -1,46 +1,87 @@
-[tool.ruff]
-# Black-compatible line length
-line-length = 88
-
-# Python version (adjust to your project)
-target-version = "py312"
-
-# Exclude common directories
-exclude = [
-    ".git",
-    "__pycache__",
-    "venv",
-    ".venv",
-    "migrations",
-    "build",
-    "dist",
+[project]
+name = "awsome-journal"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "aiofiles==25.1.0",
+    "alembic==1.18.4",
+    "annotated-doc==0.0.4",
+    "annotated-types==0.7.0",
+    "anyio==4.13.0",
+    "bcrypt==4.0.1",
+    "black==26.3.1",
+    "certifi==2026.2.25",
+    "cffi==2.0.0",
+    "cfgv==3.5.0",
+    "click==8.3.2",
+    "cryptography==48.0.0",
+    "distlib==0.4.0",
+    "dnspython==2.8.0",
+    "ecdsa==0.19.2",
+    "email-validator==2.3.0",
+    "environs==15.0.1",
+    "fastapi-cli==0.0.24",
+    "fastapi-cloud-cli==0.16.1",
+    "fastapi[all]==0.135.3",
+    "fastar==0.10.0",
+    "filelock==3.29.0",
+    "flake8==7.3.0",
+    "greenlet==3.4.0",
+    "h11==0.16.0",
+    "httpcore==1.0.9",
+    "httptools==0.7.1",
+    "httpx==0.28.1",
+    "identify==2.6.19",
+    "idna==3.11",
+    "isort==8.0.1",
+    "jinja2==3.1.6",
+    "mako==1.3.12",
+    "markdown-it-py==4.0.0",
+    "markupsafe==3.0.3",
+    "marshmallow==4.3.0",
+    "mccabe==0.7.0",
+    "mdurl==0.1.2",
+    "mypy-extensions==1.1.0",
+    "nodeenv==1.10.0",
+    "packaging==26.1",
+    "passlib==1.7.4",
+    "pathspec==1.0.4",
+    "platformdirs==4.9.6",
+    "pre-commit==4.6.0",
+    "psycopg2-binary==2.9.12",
+    "pyasn1==0.6.3",
+    "pycodestyle==2.14.0",
+    "pycparser==3.0",
+    "pydantic==2.12.5",
+    "pydantic-core==2.41.5",
+    "pydantic-extra-types==2.11.2",
+    "pydantic-settings==2.13.1",
+    "pyflakes==3.4.0",
+    "pygments==2.20.0",
+    "python-discovery==1.2.2",
+    "python-dotenv==1.2.2",
+    "python-jose==3.5.0",
+    "python-multipart==0.0.26",
+    "pytokens==0.4.1",
+    "pyyaml==6.0.3",
+    "rich==15.0.0",
+    "rich-toolkit==0.19.7",
+    "rignore==0.7.6",
+    "rsa==4.9.1",
+    "sentry-sdk==2.57.0",
+    "shellingham==1.5.4",
+    "six==1.17.0",
+    "sqlalchemy==2.0.49",
+    "starlette==1.0.0",
+    "typer==0.24.1",
+    "typing-extensions==4.15.0",
+    "typing-inspection==0.4.2",
+    "urllib3==2.6.3",
+    "uvicorn==0.44.0",
+    "uvloop==0.22.1",
+    "virtualenv==21.2.4",
+    "watchfiles==1.1.1",
+    "websockets==16.0",
 ]
-
-[tool.ruff.lint]
-# Select rules: Flake8 (E, F, W), isort (I), pyupgrade (UP), etc.
-select = [
-    "E",   # pycodestyle errors
-    "F",   # pyflakes
-    "W",   # pycodestyle warnings
-    "I",   # isort
-    "UP",  # pyupgrade (modern Python syntax)
-    "C90", # mccabe complexity
-]
-
-# Ignore rules that conflict with Black (similar to flake8's E203, W503)
-ignore = [
-    "E203", # whitespace before ':'
-]
-
-# isort settings (mimic Black profile)
-[tool.ruff.lint.isort]
-known-first-party = ["your_project_name"]  # replace with your package
-combine-as-imports = true
-force-single-line = false
-
-# Formatting settings (mimic Black)
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-skip-magic-trailing-comma = false
-line-ending = "auto"

@@ -1,5 +1,7 @@
+import uuid
+from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 
 class UserVerification(BaseModel):
@@ -8,15 +10,26 @@ class UserVerification(BaseModel):
 
 
 class CreateUserRequest(BaseModel):
-    name: str
-    email: str
-    password: str
+    name: str = Field(min_length=1)
+    email: EmailStr
+    password: str = Field(min_length=6)
     role: str
 
 
 class UpdateUserRequest(BaseModel):
-    name: str | None = None
-    email: str | None = None
+    name: str | None = Field(default=None, min_length=1)
+    email: EmailStr | None = None
+
+
+class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    name: str
+    email: str
+    role: str
+    is_active: bool
+    created_at: datetime
 
 
 class Token(BaseModel):

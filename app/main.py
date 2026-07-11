@@ -4,7 +4,22 @@ from fastapi.templating import Jinja2Templates
 
 from .routers import admin, auth, lists, todos, users, views
 
-app = FastAPI()
+openapi_tags = [
+    {"name": "Auth", "description": "User registration and login (JWT issuance)."},
+    {"name": "Todos", "description": "Manage the authenticated user's own todos."},
+    {"name": "Lists", "description": "Manage the authenticated user's own lists of todos."},
+    {"name": "Admin", "description": "Admin-only endpoints spanning every user's todos."},
+    {"name": "Users", "description": "Manage the authenticated user's own profile."},
+    {"name": "Dashboard", "description": "Server-rendered HTML pages."},
+]
+
+app = FastAPI(
+    title="Awesome Journal API",
+    description="A Todo API that helps you manage your tasks and write journals "
+    "in a fast and easy way.",
+    version="0.1.0",
+    openapi_tags=openapi_tags,
+)
 
 templates = Jinja2Templates(directory="app/templates/")
 

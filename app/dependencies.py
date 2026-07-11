@@ -11,7 +11,7 @@ from app.core.database import session_local
 from app.core.settings import ALGORITHM, SECRET_KEY
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
+oauth_bearer = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 
 def get_db():
