@@ -1,3 +1,4 @@
+import uuid
 from datetime import UTC, datetime, timedelta
 
 from jose import jwt
@@ -8,8 +9,8 @@ from .dependencies import bcrypt_context
 from .models.user import User
 
 
-def authenticate_user(username: str, password: str, db):
-    user = db.query(User).filter(User.username == username).first()
+def authenticate_user(email: str, password: str, db):
+    user = db.query(User).filter(User.email == email).first()
     if not user:
         return False
     if not bcrypt_context.verify(password, user.hashed_password):
@@ -18,14 +19,14 @@ def authenticate_user(username: str, password: str, db):
 
 
 def create_access_token(
-    username: str,
-    user_id: int,
+    email: str,
+    user_id: uuid.UUID,
     role: str,
     expire_delta: timedelta,
 ):
     encode = {
-        "sub": username,
-        "id": user_id,
+        "sub": email,
+        "id": str(user_id),
         "role": role,
     }
     expires = datetime.now(UTC) + expire_delta

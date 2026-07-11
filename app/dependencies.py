@@ -26,16 +26,16 @@ def get_db():
 async def get_current_user(token: Annotated[str, Depends(oauth_bearer)]):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        id: int = payload.get("id")
+        email: str = payload.get("sub")
+        id: str = payload.get("id")
         user_role: str = payload.get("role")
-        if username is None or id is None:
+        if email is None or id is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate user.",
             )
         return {
-            "username": username,
+            "email": email,
             "id": id,
             "user_role": user_role,
         }

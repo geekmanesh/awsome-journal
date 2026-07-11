@@ -8,21 +8,15 @@ class UserVerification(BaseModel):
 
 
 class CreateUserRequest(BaseModel):
-    username: str
+    name: str
     email: str
-    first_name: str
-    last_name: str
     password: str
     role: str
-    phone_number: str
 
 
 class UpdateUserRequest(BaseModel):
-    username: str | None = None
+    name: str | None = None
     email: str | None = None
-    first_name: str | None = None
-    last_name: str | None = None
-    phone_number: str | None = None
 
 
 class Token(BaseModel):
