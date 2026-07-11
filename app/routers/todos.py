@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Path
 from starlette import status
 
 from app.dependencies import db_dependency, user_dependency
+from app.models.list import List
 from app.models.todo import Todos
 from app.schemas.todo import TodoRequest
 
@@ -53,6 +54,15 @@ async def create_todo(
             detail="Authentication failed!",
         )
 
+    list_model = (
+        db.query(List)
+        .filter(List.id == todo_request.list_id)
+        .filter(List.owner_id == user.get("id"))
+        .first()
+    )
+    if list_model is None:
+        raise HTTPException(status_code=404, detail="List not found!")
+
     todo_model = Todos(
         **todo_request.model_dump(),
         owner_id=user.get("id"),
@@ -84,10 +94,20 @@ async def update_todo(
     if todo_model is None:
         raise HTTPException(status_code=404, detail="Todo not found!")
 
+    list_model = (
+        db.query(List)
+        .filter(List.id == todo_request.list_id)
+        .filter(List.owner_id == user.get("id"))
+        .first()
+    )
+    if list_model is None:
+        raise HTTPException(status_code=404, detail="List not found!")
+
     todo_model.title = todo_request.title
     todo_model.description = todo_request.description
     todo_model.priority = todo_request.priority
     todo_model.complete = todo_request.complete
+    todo_model.list_id = todo_request.list_id
 
     db.add(todo_model)
     db.commit()
