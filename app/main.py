@@ -17,7 +17,7 @@ app = FastAPI(
     title="Awesome Journal API",
     description="A Todo API that helps you manage your tasks and write journals "
     "in a fast and easy way.",
-    version="0.1.0",
+    version="0.2.0",
     openapi_tags=openapi_tags,
 )
 
