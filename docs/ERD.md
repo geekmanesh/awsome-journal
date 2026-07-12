@@ -1,6 +1,6 @@
 # Entity Relationship Diagram
 
-This diagram reflects the schema as currently defined in `app/models/` (`User`, `List`, `Todos`,
+This diagram reflects the schema as currently defined in `app/models/` (`User`, `List`, `Task`,
 `Repeat`), not the full feature set described in the project README. See
 [Not Yet Modeled](#not-yet-modeled) for fields on the Google Tasks roadmap that don't exist in the
 schema yet.
@@ -10,9 +10,9 @@ schema yet.
 ```mermaid
 erDiagram
     USERS ||--o{ LISTS : owns
-    USERS ||--o{ TODOS : owns
-    LISTS ||--o{ TODOS : contains
-    TODOS ||--o| REPEATS : "recurs by"
+    USERS ||--o{ TASKS : owns
+    LISTS ||--o{ TASKS : contains
+    TASKS ||--o| REPEATS : "recurs by"
 
     USERS {
         uuid id PK
@@ -32,7 +32,7 @@ erDiagram
         uuid owner_id FK "-> users.id"
     }
 
-    TODOS {
+    TASKS {
         int id PK
         string title
         string description
@@ -44,7 +44,7 @@ erDiagram
 
     REPEATS {
         int id PK
-        int todo_id FK "-> todos.id, NOT NULL, UNIQUE, ON DELETE CASCADE"
+        int task_id FK "-> tasks.id, NOT NULL, UNIQUE, ON DELETE CASCADE"
         enum frequency "daily | weekly | monthly | yearly"
         int interval_count "default: 1"
         time time_of_day
@@ -79,7 +79,7 @@ erDiagram
 | `priority`     | Integer |                                   |
 | `owner_id`     | UUID    | FK &rarr; `users.id`, nullable   |
 
-### `todos` (`app/models/todo.py`)
+### `tasks` (`app/models/task.py`)
 
 | Column        | Type    | Constraints                                          |
 | -------------- | ------- | ----------------------------------------------------- |
@@ -93,13 +93,13 @@ erDiagram
 
 ### `repeats` (`app/models/repeat.py`)
 
-Holds an optional recurrence rule for a single todo. A todo has at most one `repeats` row; a todo
+Holds an optional recurrence rule for a single task. A task has at most one `repeats` row; a task
 with none is a one-off task.
 
 | Column           | Type            | Constraints                                                |
 | ----------------- | --------------- | ------------------------------------------------------------ |
 | `id`               | Integer         | PK                                                            |
-| `todo_id`          | Integer         | FK &rarr; `todos.id`, **NOT NULL**, **UNIQUE**, `ON DELETE CASCADE` |
+| `task_id`          | Integer         | FK &rarr; `tasks.id`, **NOT NULL**, **UNIQUE**, `ON DELETE CASCADE` |
 | `frequency`        | Enum            | `RepeatFrequency`: `daily`, `weekly`, `monthly`, `yearly`; **NOT NULL** |
 | `interval_count`   | Integer         | **NOT NULL**, default `1` &mdash; the *N* in "every N days/weeks/…" |
 | `time_of_day`      | Time            | **NOT NULL** &mdash; time of day the recurrence fires        |
@@ -115,13 +115,13 @@ field is set for the chosen `end_type` before the row is written.
 ## Relationships
 
 - **User &rarr; Lists** (1&ndash;N): a user owns zero or more lists (`lists.owner_id`).
-- **User &rarr; Todos** (1&ndash;N): a user owns zero or more todos directly (`todos.owner_id`).
-- **List &rarr; Todos** (1&ndash;N): a list contains zero or more todos (`todos.list_id`). Every todo
-  must belong to exactly one list. Deleting a list cascades and deletes its todos
+- **User &rarr; Tasks** (1&ndash;N): a user owns zero or more tasks directly (`tasks.owner_id`).
+- **List &rarr; Tasks** (1&ndash;N): a list contains zero or more tasks (`tasks.list_id`). Every task
+  must belong to exactly one list. Deleting a list cascades and deletes its tasks
   (`ondelete="CASCADE"` at the DB level, `cascade="all, delete-orphan"` on the ORM relationship).
-- **Todo &rarr; Repeat** (1&ndash;0..1): a todo optionally has one recurrence rule
-  (`repeats.todo_id`, unique). Omitting `repeat` on `TodoRequest` leaves the todo non-recurring.
-  Deleting a todo cascades and deletes its repeat rule (`ondelete="CASCADE"` at the DB level,
+- **Task &rarr; Repeat** (1&ndash;0..1): a task optionally has one recurrence rule
+  (`repeats.task_id`, unique). Omitting `repeat` on `TaskRequest` leaves the task non-recurring.
+  Deleting a task cascades and deletes its repeat rule (`ondelete="CASCADE"` at the DB level,
   `cascade="all, delete-orphan"` on the ORM relationship, `uselist=False` making it one-to-one).
 
 ## Not Yet Modeled
@@ -131,11 +131,11 @@ Google Tasks clone. `priority` exists as a plain integer, and recurrence is now 
 `repeats`. The following still have no columns or tables and should be planned before the
 router/schema work that depends on them:
 
-- **Due dates on non-recurring todos** &mdash; `repeats.start_at`/`time_of_day` only exist for todos
-  that have a recurrence rule; a plain one-off todo (e.g. "due tomorrow, no repeat") has no
-  schedule at all. Needs a `due_at` column on `todos` independent of `repeats`.
-- **Labels/tags** &mdash; likely a `labels` table plus a `todo_labels` many-to-many join table, since
+- **Due dates on non-recurring tasks** &mdash; `repeats.start_at`/`time_of_day` only exist for tasks
+  that have a recurrence rule; a plain one-off task (e.g. "due tomorrow, no repeat") has no
+  schedule at all. Needs a `due_at` column on `tasks` independent of `repeats`.
+- **Labels/tags** &mdash; likely a `labels` table plus a `task_labels` many-to-many join table, since
   a task can carry multiple labels and a label can apply to multiple tasks.
 - **Subtasks** &mdash; Google Tasks supports one level of nested tasks; would need a self-referential
-  `parent_id` on `todos`.
+  `parent_id` on `tasks`.
 - **Reminders/notifications** &mdash; out of scope until due dates exist.

@@ -39,7 +39,7 @@ accounts.
 
 ### Entity Relationship Diagram
 
-See [ERD.md](/docs/ERD.md) for the current database schema (`users`, `lists`, `todos`, `repeats`) and
+See [ERD.md](/docs/ERD.md) for the current database schema (`users`, `lists`, `tasks`, `repeats`) and
 which parts of the Google Tasks feature set are not yet modeled.
 
 ## Getting Started
