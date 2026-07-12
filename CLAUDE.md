@@ -48,7 +48,9 @@ safety net for regressions.
   five routers under `app/routers/`. Docker/uvicorn point at `app.main:app`. The root-level `main.py` is an
   unrelated `uv init` stub — not part of the running app.
 - **Routers** (`app/routers/`), each an `APIRouter` with its own prefix:
-  - `auth.py` (`/auth`) — user registration and `/auth/token` login (OAuth2 password flow), issues JWTs.
+  - `auth.py` (`/auth`) — user registration and `/auth/token` login (JSON body: `email`/`password`),
+    issues JWTs. Protected routes authenticate via `HTTPBearer` (a raw `Authorization: Bearer <token>`
+    header), not the OAuth2 password/form flow.
   - `todos.py` (`/todos`) — CRUD for the authenticated user's own todos.
   - `admin.py` (`/admin`) — todo CRUD across all users, gated by `user_role == "admin"`.
   - `users.py` (`/users`) — current-user profile fetch/update and password change.

@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
@@ -11,7 +11,7 @@ from app.core.database import session_local
 from app.core.settings import ALGORITHM, SECRET_KEY
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth_bearer = OAuth2PasswordBearer(tokenUrl="/auth/token")
+bearer_scheme = HTTPBearer()
 
 
 def get_db():
@@ -23,7 +23,10 @@ def get_db():
         sqlite_db.close()
 
 
-async def get_current_user(token: Annotated[str, Depends(oauth_bearer)]):
+async def get_current_user(
+    credentials: Annotated[HTTPAuthorizationCredentials, Depends(bearer_scheme)],
+):
+    token = credentials.credentials
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")

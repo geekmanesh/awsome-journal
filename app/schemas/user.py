@@ -16,6 +16,11 @@ class CreateUserRequest(BaseModel):
     role: str
 
 
+class UserLoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+
 class UpdateUserRequest(BaseModel):
     name: str | None = Field(default=None, min_length=1)
     email: EmailStr | None = None

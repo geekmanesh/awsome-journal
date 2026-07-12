@@ -1,14 +1,12 @@
 from datetime import timedelta
-from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, HTTPException
 from sqlalchemy.exc import IntegrityError
 from starlette import status
 
 from app.dependencies import bcrypt_context, db_dependency
 from app.models.user import User
-from app.schemas.user import CreateUserRequest, Token, UserResponse
+from app.schemas.user import CreateUserRequest, Token, UserLoginRequest, UserResponse
 from app.services import authenticate_user, create_access_token
 
 router = APIRouter(
@@ -55,14 +53,13 @@ async def create_user(
     "/token",
     response_model=Token,
     summary="Log in and obtain an access token",
-    description="Exchanges an email and password (submitted as `username` and "
-    "`password` form fields per the OAuth2 password flow) for a bearer JWT.",
+    description="Exchanges an email and password (JSON body) for a bearer JWT.",
 )
 async def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    login_request: UserLoginRequest,
     db: db_dependency,
 ):
-    user = authenticate_user(form_data.username, form_data.password, db)
+    user = authenticate_user(login_request.email, login_request.password, db)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
