@@ -1,6 +1,6 @@
-# Awesome Journal - Todo and Journal API
+# Google Tasks API
 
-A Todo API that helps you manage your tasks and write journals in a fast and easy way.
+A FastAPI backend inspired by Google Tasks, featuring lists, tasks, due dates, priorities, labels, authentication, and RESTful APIs.
 
 ## Table of Contents
 
@@ -18,7 +18,7 @@ A Todo API that helps you manage your tasks and write journals in a fast and eas
 
 ## About the Project
 
-This repository contains a FastAPI project for managing todos and writing journals. You can build applications or website interfaces using this API. The project allows you to easily create, read, update, and delete your todos, with JWT authentication support.
+This repository contains a FastAPI project inspired by Google Tasks. You can build applications or website interfaces using this API. The project allows you to easily create, read, update, and delete your lists and tasks, complete with due dates, priorities, and labels, with JWT authentication support.
 
 ### Built With
 
@@ -30,7 +30,8 @@ This repository contains a FastAPI project for managing todos and writing journa
 
 #### Key Features
 
-- Create, read, update, and delete todos
+- Create, read, update, and delete lists and tasks
+- Due dates, priorities, and labels
 - JWT authentication
 - Admin endpoints
 
@@ -53,8 +54,8 @@ Clone the repository to your desired folder:
 
 ```sh
 # Clone the repository
-git clone https://github.com/geekmanesh/awsome-journal.git
-cd awsome-journal
+git clone https://github.com/geekmanesh/google-tasks-api.git
+cd google-tasks-api
 
 # Build the Docker image
 make build

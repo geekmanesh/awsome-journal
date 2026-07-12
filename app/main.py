@@ -14,9 +14,9 @@ openapi_tags = [
 ]
 
 app = FastAPI(
-    title="Awesome Journal API",
-    description="A Todo API that helps you manage your tasks and write journals "
-    "in a fast and easy way.",
+    title="Google Tasks API",
+    description="A FastAPI backend inspired by Google Tasks, featuring lists, tasks, "
+    "due dates, priorities, labels, authentication, and RESTful APIs.",
     version="0.2.0",
     openapi_tags=openapi_tags,
 )

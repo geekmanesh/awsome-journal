@@ -1,6 +1,6 @@
 ### Contributions are WELCOME!
 
->First off, thank you for considering contributing to Awsome Journal. It's people like you that make Awsome Journal such a great tool.
+>First off, thank you for considering contributing to Google Tasks API. It's people like you that make Google Tasks API such a great tool.
 
 ### Following guidelines is important as coding
 
@@ -10,7 +10,7 @@
 
 Keep an open mind! Improving documentation, bug triaging, or writing tutorials are all examples of helpful contributions that mean less work for you.
 
-> Awsome Journal is an open source project and we love to receive contributions from our community — you! There are many ways to contribute, from writing tutorials or blog posts, improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into Awsome Journal itself.
+> Google Tasks API is an open source project and we love to receive contributions from our community — you! There are many ways to contribute, from writing tutorials or blog posts, improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into Google Tasks API itself.
 
 ### Some contributions are NOT welcome! 
 
@@ -85,7 +85,7 @@ Keep an open mind! Improving documentation, bug triaging, or writing tutorials a
 
 ### Suggesting Feature
 
-> If you find yourself wishing for a feature that doesn't exist in Awsome Journal, you are probably not alone. There are bound to be others out there with similar needs. Many of the features that Awsome Journal has today have been added because our users saw the need. Open an issue on our issues list on GitHub which describes the feature you would like to see, why you need it, and how it should work.
+> If you find yourself wishing for a feature that doesn't exist in Google Tasks API, you are probably not alone. There are bound to be others out there with similar needs. Many of the features that Google Tasks API has today have been added because our users saw the need. Open an issue on our issues list on GitHub which describes the feature you would like to see, why you need it, and how it should work.
 
 # Community
 
