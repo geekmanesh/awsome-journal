@@ -1,39 +1,46 @@
 # Google Tasks API
 
-A FastAPI backend inspired by Google Tasks, featuring lists, tasks, due dates, priorities, labels, authentication, and RESTful APIs.
+A FastAPI backend for managing task lists and tasks, modeled on Google Tasks.
 
 ## Table of Contents
 
 - [About the Project](#about-the-project)
-  - [Built With](#built-with)
-    - [Tech Stack](#tech-stack)
-    - [Key Features](#key-features)
+  - [Tech Stack](#tech-stack)
+  - [Key Features](#key-features)
+  - [Entity Relationship Diagram](#entity-relationship-diagram)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Setup and Install](#setup-and-install)
   - [Usage](#usage)
 - [Contributing](#contributing)
-- [Show Your Support](#show-your-support)
 - [License](#license)
 
 ## About the Project
 
-This repository contains a FastAPI project inspired by Google Tasks. You can build applications or website interfaces using this API. The project allows you to easily create, read, update, and delete your lists and tasks, complete with due dates, priorities, and labels, with JWT authentication support.
+This repository provides a JWT-authenticated REST API for organizing tasks into lists. Each task belongs
+to exactly one list, carries a priority, and can optionally follow a recurrence rule (daily, weekly,
+monthly, or yearly) with a defined start time and end condition. Admin users can manage tasks across all
+accounts.
 
-### Built With
-
-#### Tech Stack
+### Tech Stack
 
 - **Language**: Python
 - **Framework**: FastAPI
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL, via SQLAlchemy and Alembic
 
-#### Key Features
+### Key Features
 
-- Create, read, update, and delete lists and tasks
-- Due dates, priorities, and labels
+- CRUD for lists and tasks, scoped to the authenticated user
+- Task recurrence: repeat every N days, weeks, months, or years, with a start time and an end
+  condition (never, on a fixed date, or after a set number of occurrences)
+- Task and list priority levels
 - JWT authentication
-- Admin endpoints
+- Admin endpoints spanning every user's tasks
+
+### Entity Relationship Diagram
+
+See [ERD.md](/docs/ERD.md) for the current database schema (`users`, `lists`, `todos`, `repeats`) and
+which parts of the Google Tasks feature set are not yet modeled.
 
 ## Getting Started
 
@@ -50,36 +57,28 @@ postgresql
 
 ### Setup and Install
 
-Clone the repository to your desired folder:
+Clone the repository:
 
 ```sh
-# Clone the repository
 git clone https://github.com/geekmanesh/google-tasks-api.git
 cd google-tasks-api
 
 # Build the Docker image
 make build
 
-# Run the Docker container
+# Start the containers
 make up
 ```
 
 ### Usage
 
-Once the application is running, open your browser and go to [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) to see the interactive API documentation for all endpoints.
+Once the containers are running, open [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) for the
+interactive API documentation.
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](/docs/CONTRIBUTING.md) for more information.
-
-## Show Your Support
-
-If you find this project useful, please consider supporting it.
-
-## Acknowledgements
-
-*No acknowledgements at this time.*
+Contributions are welcome. See [CONTRIBUTING.md](/docs/CONTRIBUTING.md) for guidelines.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](/LICENSE) file for details.
+This project is licensed under the MIT License. See [LICENSE](/LICENSE) for details.
