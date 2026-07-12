@@ -17,3 +17,10 @@ class Todos(Base):
     list_id = Column(Integer, ForeignKey("lists.id", ondelete="CASCADE"), nullable=False)
 
     list = relationship("List", back_populates="todos")
+    repeat = relationship(
+        "Repeat",
+        back_populates="todo",
+        uselist=False,
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )

@@ -3,6 +3,7 @@ from starlette import status
 
 from app.dependencies import db_dependency, user_dependency
 from app.models.list import List
+from app.models.repeat import Repeat
 from app.models.todo import Todos
 from app.schemas.todo import TodoRequest, TodoResponse
 
@@ -72,9 +73,12 @@ async def create_todo(
         )
 
     todo_model = Todos(
-        **todo_request.model_dump(),
+        **todo_request.model_dump(exclude={"repeat"}),
         owner_id=user.get("id"),
     )
+
+    if todo_request.repeat is not None:
+        todo_model.repeat = Repeat(**todo_request.repeat.model_dump())
 
     db.add(todo_model)
     db.commit()
@@ -123,6 +127,15 @@ async def update_todo(
     todo_model.priority = todo_request.priority
     todo_model.complete = todo_request.complete
     todo_model.list_id = todo_request.list_id
+
+    if todo_request.repeat is None:
+        if todo_model.repeat is not None:
+            db.delete(todo_model.repeat)
+    elif todo_model.repeat is None:
+        todo_model.repeat = Repeat(**todo_request.repeat.model_dump())
+    else:
+        for field, value in todo_request.repeat.model_dump().items():
+            setattr(todo_model.repeat, field, value)
 
     db.add(todo_model)
     db.commit()

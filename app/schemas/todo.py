@@ -2,6 +2,8 @@ import uuid
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.schemas.repeat import RepeatRequest, RepeatResponse
+
 
 class TodoRequest(BaseModel):
     title: str = Field(min_length=3)
@@ -9,6 +11,9 @@ class TodoRequest(BaseModel):
     priority: int = Field(gt=0, lt=6)
     complete: bool
     list_id: int
+    repeat: RepeatRequest | None = Field(
+        default=None, description="Omit for a one-off todo; provide to make it recur."
+    )
 
 
 class TodoResponse(BaseModel):
@@ -21,3 +26,4 @@ class TodoResponse(BaseModel):
     complete: bool
     owner_id: uuid.UUID
     list_id: int
+    repeat: RepeatResponse | None = None
