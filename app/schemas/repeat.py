@@ -38,7 +38,7 @@ class RepeatResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    todo_id: int
+    task_id: int
     frequency: RepeatFrequency
     interval_count: int
     time_of_day: time

@@ -43,20 +43,22 @@ safety net for regressions.
 
 ## Architecture
 
-- **Entrypoint**: `app/main.py` builds the `FastAPI()` app, calls `Base.metadata.create_all(bind=engine)`
-  (tables are created at startup rather than solely through Alembic), mounts `app/static/`, and wires in the
-  five routers under `app/routers/`. Docker/uvicorn point at `app.main:app`. The root-level `main.py` is an
-  unrelated `uv init` stub — not part of the running app.
+- **Entrypoint**: `app/main.py` builds the `FastAPI()` app and wires in the five routers under
+  `app/routers/`. Tables are created solely via Alembic migrations — there is no
+  `Base.metadata.create_all()` call. Docker/uvicorn point at `app.main:app`. The root-level `main.py`
+  is an unrelated `uv init` stub — not part of the running app. This is a JSON-only API: the earlier
+  Jinja2/Bootstrap dashboard (`views.py`, `app/templates/`, `app/static/`) has been removed.
 - **Routers** (`app/routers/`), each an `APIRouter` with its own prefix:
   - `auth.py` (`/auth`) — user registration and `/auth/token` login (JSON body: `email`/`password`),
     issues JWTs. Protected routes authenticate via `HTTPBearer` (a raw `Authorization: Bearer <token>`
     header), not the OAuth2 password/form flow.
-  - `todos.py` (`/todos`) — CRUD for the authenticated user's own todos.
-  - `admin.py` (`/admin`) — todo CRUD across all users, gated by `user_role == "admin"`.
+  - `tasks.py` (`/tasks`) — CRUD for the authenticated user's own tasks.
+  - `lists.py` (`/lists`) — CRUD for the authenticated user's own lists, plus
+    `GET /lists/{list_id}/tasks` to read a list's tasks.
+  - `admin.py` (`/admin`) — task CRUD across all users, gated by `user_role == "admin"`.
   - `users.py` (`/users`) — current-user profile fetch/update and password change.
-  - `views.py` (`/dashboard`) — server-rendered Jinja2 pages (login/register), not JSON API.
 - **Auth model**: `app/dependencies.py` defines `get_current_user`, which decodes the JWT (via
-  `app.core.settings.SECRET_KEY`/`ALGORITHM`) into a plain dict `{"username", "id", "user_role"}` — there is
+  `app.core.settings.SECRET_KEY`/`ALGORITHM`) into a plain dict `{"email", "id", "user_role"}` — there is
   no ORM user object attached to the request, so handlers re-query `User` by id when they need more fields.
   `user_dependency` / `db_dependency` (`Annotated[...]` aliases in `dependencies.py`) are the standard way
   handlers pull the current user / DB session; reuse them rather than re-declaring `Depends(...)` inline.
@@ -64,20 +66,23 @@ safety net for regressions.
   (`authenticate_user`, `create_access_token`).
 - **Data layer**: `app/core/database.py` creates the SQLAlchemy `engine`/`session_local`/declarative `Base`
   from `DATABASE_URL` (built in `app/core/settings.py` from discrete `DB_*` env vars, loaded via
-  `environs`). Models live in `app/models/` (`User`, `Todos`, `List`) and are re-exported through
+  `environs`). Models live in `app/models/` (`User`, `Task`, `List`, `Repeat`) and are re-exported through
   `app/models/__init__.py` — new models must be added there too, since `app/alembic/env.py` imports
-  `app.models` as a whole to populate `target_metadata` for autogeneration. `Todos.list_id` and
-  `List.owner_id` exist as FKs but there is currently no `lists` router.
-- **Schemas**: Pydantic request/response models live in `app/schemas/` (`user.py`, `todo.py`), separate from
-  the SQLAlchemy models in `app/models/`. Keep this split when adding new resources.
+  `app.models` as a whole to populate `target_metadata` for autogeneration. `Task.list_id` is `NOT NULL`
+  with `ON DELETE CASCADE`; a `Task` optionally has one `Repeat` (recurrence rule; also
+  `ON DELETE CASCADE`, one-to-one via a unique FK on `repeats.task_id`). See `docs/ERD.md` for the full
+  schema.
+- **Schemas**: Pydantic request/response models live in `app/schemas/` (`user.py`, `task.py`, `list.py`,
+  `repeat.py`), separate from the SQLAlchemy models in `app/models/`. Keep this split when adding new
+  resources.
 - **Migrations**: Alembic is configured to point at `app/alembic` (see root `alembic.ini`,
   `script_location = app/alembic`). `app/alembic/env.py` reads `DATABASE_URL` from
   `app.core.settings` rather than `alembic.ini`, and imports `app.models` for autogenerate — new model
   modules need `from .newmodel import X` added to `app/models/__init__.py` or they won't be picked up.
-- **Templates/static**: `app/templates/` (Jinja2: `layout.html`, `login.html`, `register.html`, `home.html`)
-  and `app/static/` (Bootstrap 5.3.8 vendored, plus project CSS/JS) back the `/dashboard` views router.
-- **API docs collections**: Bruno (`.bruno/`) and an OpenAPI-derived collection (`docs/collection/`) contain
-  request examples grouped by Auth/Todos/Admin/Users — useful references for expected request/response
+  Table/column renames are not detected by `--autogenerate` (it emits drop+create); those migrations must
+  be hand-written with `op.rename_table` / `op.alter_column(new_column_name=...)`.
+- **API docs collection**: An OpenAPI-derived Bruno collection lives in `docs/collection/`, with request
+  examples grouped by Auth/Tasks/Lists/Admin/Users — useful references for expected request/response
   shapes when a router lacks a Pydantic response model.
 
 ## Notes

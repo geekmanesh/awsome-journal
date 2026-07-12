@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException, Path
 from starlette import status
 
 from app.dependencies import db_dependency, user_dependency
-from app.models.todo import Todos
-from app.schemas.todo import TodoResponse
+from app.models.task import Task
+from app.schemas.task import TaskResponse
 
 router = APIRouter(
     prefix="/admin",
@@ -20,55 +20,55 @@ def _require_admin(user: dict) -> None:
 
 
 @router.get(
-    "/todos",
+    "/tasks",
     status_code=status.HTTP_200_OK,
-    response_model=list[TodoResponse],
-    summary="List every user's todos",
-    description="Admin-only. Returns all todos across all users.",
+    response_model=list[TaskResponse],
+    summary="List every user's tasks",
+    description="Admin-only. Returns all tasks across all users.",
 )
-async def read_all_todos(user: user_dependency, db: db_dependency):
+async def read_all_tasks(user: user_dependency, db: db_dependency):
     _require_admin(user)
 
-    return db.query(Todos).all()
+    return db.query(Task).all()
 
 
 @router.get(
-    "/todos/{todo_id}",
+    "/tasks/{task_id}",
     status_code=status.HTTP_200_OK,
-    response_model=TodoResponse,
-    summary="Get any user's todo by ID",
-    description="Admin-only. Returns a single todo regardless of its owner.",
+    response_model=TaskResponse,
+    summary="Get any user's task by ID",
+    description="Admin-only. Returns a single task regardless of its owner.",
 )
-async def read_todo(
-    user: user_dependency, db: db_dependency, todo_id: int = Path(gt=0)
+async def read_task(
+    user: user_dependency, db: db_dependency, task_id: int = Path(gt=0)
 ):
     _require_admin(user)
 
-    todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
-    if todo_model is None:
+    task_model = db.query(Task).filter(Task.id == task_id).first()
+    if task_model is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="No todo found with this id!",
+            detail="No task found with this id!",
         )
-    return todo_model
+    return task_model
 
 
 @router.delete(
-    "/todos/{todo_id}",
+    "/tasks/{task_id}",
     status_code=status.HTTP_204_NO_CONTENT,
-    summary="Delete any user's todo",
-    description="Admin-only. Permanently deletes a todo regardless of its owner.",
+    summary="Delete any user's task",
+    description="Admin-only. Permanently deletes a task regardless of its owner.",
 )
-async def delete_todo(
-    user: user_dependency, db: db_dependency, todo_id: int = Path(gt=0)
+async def delete_task(
+    user: user_dependency, db: db_dependency, task_id: int = Path(gt=0)
 ):
     _require_admin(user)
 
-    todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
-    if todo_model is None:
+    task_model = db.query(Task).filter(Task.id == task_id).first()
+    if task_model is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Todo not found!"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Task not found!"
         )
 
-    db.delete(todo_model)
+    db.delete(task_model)
     db.commit()

@@ -4,7 +4,7 @@ from starlette import status
 from app.dependencies import db_dependency, user_dependency
 from app.models.list import List
 from app.schemas.list import ListRequest, ListResponse
-from app.schemas.todo import TodoResponse
+from app.schemas.task import TaskResponse
 
 router = APIRouter(
     prefix="/lists",
@@ -48,13 +48,13 @@ async def read_list(
 
 
 @router.get(
-    "/{list_id}/todos",
+    "/{list_id}/tasks",
     status_code=status.HTTP_200_OK,
-    response_model=list[TodoResponse],
-    summary="List the todos in a list",
-    description="Returns every todo belonging to a list owned by the authenticated user.",
+    response_model=list[TaskResponse],
+    summary="List the tasks in a list",
+    description="Returns every task belonging to a list owned by the authenticated user.",
 )
-async def read_list_todos(
+async def read_list_tasks(
     user: user_dependency, db: db_dependency, list_id: int = Path(gt=0)
 ):
     list_model = (
@@ -68,7 +68,7 @@ async def read_list_todos(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="No list found with this id!",
         )
-    return list_model.todos
+    return list_model.tasks
 
 
 @router.post(
@@ -131,7 +131,7 @@ async def update_list(
     status_code=status.HTTP_204_NO_CONTENT,
     summary="Delete a list",
     description="Permanently deletes a list owned by the authenticated user, "
-    "along with all of its todos.",
+    "along with all of its tasks.",
 )
 async def delete_list(
     user: user_dependency, db: db_dependency, list_id: int = Path(gt=0)

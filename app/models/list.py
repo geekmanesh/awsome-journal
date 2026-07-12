@@ -13,8 +13,8 @@ class List(Base):
     priority = Column(Integer)
     owner_id = Column(UUID(as_uuid=True), ForeignKey("users.id"))
 
-    todos = relationship(
-        "Todos",
+    tasks = relationship(
+        "Task",
         back_populates="list",
         cascade="all, delete-orphan",
         passive_deletes=True,

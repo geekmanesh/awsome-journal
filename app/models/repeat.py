@@ -23,9 +23,9 @@ class Repeat(Base):
     __tablename__ = "repeats"
 
     id = Column(Integer, primary_key=True, index=True)
-    todo_id = Column(
+    task_id = Column(
         Integer,
-        ForeignKey("todos.id", ondelete="CASCADE"),
+        ForeignKey("tasks.id", ondelete="CASCADE"),
         nullable=False,
         unique=True,
     )
@@ -41,4 +41,4 @@ class Repeat(Base):
     end_at = Column(DateTime(timezone=True), nullable=True)
     occurrences = Column(Integer, nullable=True)
 
-    todo = relationship("Todos", back_populates="repeat")
+    task = relationship("Task", back_populates="repeat")

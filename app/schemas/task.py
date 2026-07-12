@@ -5,18 +5,18 @@ from pydantic import BaseModel, ConfigDict, Field
 from app.schemas.repeat import RepeatRequest, RepeatResponse
 
 
-class TodoRequest(BaseModel):
+class TaskRequest(BaseModel):
     title: str = Field(min_length=3)
     description: str = Field(min_length=3, max_length=1000)
     priority: int = Field(gt=0, lt=6)
     complete: bool
     list_id: int
     repeat: RepeatRequest | None = Field(
-        default=None, description="Omit for a one-off todo; provide to make it recur."
+        default=None, description="Omit for a one-off task; provide to make it recur."
     )
 
 
-class TodoResponse(BaseModel):
+class TaskResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int

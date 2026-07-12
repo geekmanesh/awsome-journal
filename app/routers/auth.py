@@ -5,6 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from starlette import status
 
 from app.dependencies import bcrypt_context, db_dependency
+from app.models.list import List
 from app.models.user import User
 from app.schemas.user import CreateUserRequest, Token, UserLoginRequest, UserResponse
 from app.services import authenticate_user, create_access_token
@@ -20,8 +21,8 @@ router = APIRouter(
     status_code=status.HTTP_201_CREATED,
     response_model=UserResponse,
     summary="Register a new user",
-    description="Creates a new user account with a bcrypt-hashed password. "
-    "The email address must be unique.",
+    description="Creates a new user account with a bcrypt-hashed password, along with a default "
+    "\"Tasks\" list. The email address must be unique.",
 )
 async def create_user(
     db: db_dependency,
@@ -45,6 +46,15 @@ async def create_user(
             detail="A user with this email already exists.",
         )
     db.refresh(create_user_model)
+
+    default_list = List(
+        title="Tasks",
+        description="Your default task list.",
+        priority=1,
+        owner_id=create_user_model.id,
+    )
+    db.add(default_list)
+    db.commit()
 
     return create_user_model
 
