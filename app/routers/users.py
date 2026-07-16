@@ -2,9 +2,8 @@ from fastapi import APIRouter, HTTPException
 from starlette import status
 
 from app.dependencies import db_dependency, user_dependency
-from app.models.user import User
 from app.schemas.user import UpdateUserRequest, UserResponse, UserVerification
-from app.services import bcrypt_context
+from app.services import user_service
 
 router = APIRouter(
     prefix="/users",
@@ -20,7 +19,7 @@ router = APIRouter(
     description="Returns the profile of the authenticated user.",
 )
 async def get_user(user: user_dependency, db: db_dependency):
-    user_model = db.query(User).filter(User.id == user.get("id")).first()
+    user_model = user_service.get_user(db, user.get("id"))
     if user_model is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found!"
@@ -38,23 +37,16 @@ async def get_user(user: user_dependency, db: db_dependency):
 async def change_password(
     user: user_dependency, db: db_dependency, user_verification: UserVerification
 ):
-    user_model = db.query(User).filter(User.id == user.get("id")).first()
-    if user_model is None:
+    result = user_service.change_password(db, user.get("id"), user_verification)
+    if result is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found!"
         )
-
-    if not bcrypt_context.verify(
-        user_verification.password, user_model.hashed_password
-    ):
+    if result is False:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Current password is incorrect.",
         )
-    user_model.hashed_password = bcrypt_context.hash(user_verification.new_password)
-
-    db.add(user_model)
-    db.commit()
 
 
 @router.patch(
@@ -68,19 +60,11 @@ async def change_password(
 async def update_user(
     user: user_dependency, db: db_dependency, user_update_request: UpdateUserRequest
 ):
-    user_model = db.query(User).filter(User.id == user.get("id")).first()
-
+    user_model = user_service.update_user(db, user.get("id"), user_update_request)
     if user_model is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found!",
         )
-
-    update_data = user_update_request.model_dump(exclude_unset=True)
-    for key, value in update_data.items():
-        setattr(user_model, key, value)
-
-    db.commit()
-    db.refresh(user_model)
 
     return user_model

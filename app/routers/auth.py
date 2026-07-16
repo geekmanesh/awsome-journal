@@ -1,14 +1,10 @@
-from datetime import timedelta
-
 from fastapi import APIRouter, HTTPException
 from sqlalchemy.exc import IntegrityError
 from starlette import status
 
-from app.dependencies import bcrypt_context, db_dependency
-from app.models.list import List
-from app.models.user import User
+from app.dependencies import db_dependency
 from app.schemas.user import CreateUserRequest, Token, UserLoginRequest, UserResponse
-from app.services import authenticate_user, create_access_token
+from app.services import auth_service
 
 router = APIRouter(
     prefix="/auth",
@@ -28,35 +24,13 @@ async def create_user(
     db: db_dependency,
     create_user_request: CreateUserRequest,
 ):
-    create_user_model = User(
-        email=create_user_request.email,
-        name=create_user_request.name,
-        role=create_user_request.role,
-        hashed_password=bcrypt_context.hash(create_user_request.password),
-        is_active=True,
-    )
-
-    db.add(create_user_model)
     try:
-        db.commit()
+        return auth_service.register_user(db, create_user_request)
     except IntegrityError:
-        db.rollback()
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="A user with this email already exists.",
         )
-    db.refresh(create_user_model)
-
-    default_list = List(
-        title="Tasks",
-        description="Your default task list.",
-        priority=1,
-        owner_id=create_user_model.id,
-    )
-    db.add(default_list)
-    db.commit()
-
-    return create_user_model
 
 
 @router.post(
@@ -69,15 +43,11 @@ async def login_for_access_token(
     login_request: UserLoginRequest,
     db: db_dependency,
 ):
-    user = authenticate_user(login_request.email, login_request.password, db)
-    if not user:
+    token = auth_service.login(db, login_request.email, login_request.password)
+    if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password.",
         )
-
-    token = create_access_token(
-        user.email, user.id, user.role, timedelta(minutes=20)
-    )
 
     return Token(access_token=token, token_type="bearer")
