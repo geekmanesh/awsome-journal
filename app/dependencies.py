@@ -2,15 +2,13 @@ from typing import Annotated
 
 from fastapi import Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import JWTError, jwt
-from passlib.context import CryptContext
+from jose import JWTError
 from sqlalchemy.orm import Session
 from starlette import status
 
 from app.core.database import session_local
-from app.core.settings import ALGORITHM, SECRET_KEY
+from app.core.security import decode_access_token
 
-bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 bearer_scheme = HTTPBearer()
 
 
@@ -28,7 +26,7 @@ async def get_current_user(
 ):
     token = credentials.credentials
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = decode_access_token(token)
         email: str = payload.get("sub")
         id: str = payload.get("id")
         user_role: str = payload.get("role")
